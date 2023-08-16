@@ -1,0 +1,160 @@
+/***************************************** 
+* 说明：利用反射将数据库查询的内容自动绑定 
+*       到实体类 
+* 
+* 时间：1:49 2009-9-19 
+* 
+* 程序员：王文壮 
+* ***************************************/ 
+/****************数据库脚本*************** 
+* create database MySchool 
+* go 
+* use MySchool 
+* go 
+* create table Student 
+* ( 
+* ID int identity primary key, 
+* Name varchar(10) 
+* ) 
+* ****************************************/ 
+using System; 
+using System.Reflection; 
+using System.Data.SqlClient; 
+using System.Data; 
+using System.Collections.Generic;
+namespace ReflectionDemo 
+{ 
+    #region Main 
+    class Program 
+    { 
+        static void Main(string[] args) 
+        { 
+            DataSet ds = new DataSet();
+            #region 连接数据库构建DataSet
+            //SqlConnection con = new SqlConnection("Data Source=.;Initial Catalog=MySchool;Integrated Security=True"); 
+            //SqlDataAdapter objAdapter = new SqlDataAdapter("Select * from student", con); 
+            //objAdapter.Fill(ds);
+            #endregion
+            #region 手动构建DataSet
+            DataTable dt = new DataTable(); 
+            dt.Columns.Add("ID"); 
+            dt.Columns.Add("Name"); 
+            DataRow row = dt.NewRow(); 
+            row["ID"] = 1; 
+            row["Name"] = "灰太狼"; 
+            dt.Rows.Add(row); 
+            ds.Tables.Add(dt); 
+            #endregion
+            List<Student> students = new List<Student>(); 
+            foreach (DataRow dataRow in ds.Tables[0].Rows) 
+            { 
+                Student stu = new Student(); 
+                Utility.ConvertToEntity(stu, row); 
+                students.Add(stu); 
+            } 
+            foreach (Student student in students) 
+            { 
+                Console.WriteLine(student.Name); 
+            } 
+        } 
+    } 
+    #endregion
+    #region 实体类
+    /// <summary> 
+    /// 实体类，需要在属性 
+    /// 上添加自定义特性 
+    /// 每个实体类对应数据表里 
+    /// 的一个字段，注意，自定义特性里的参数 
+    /// 一定要和数据表里的字段一一对应， 
+    /// 否则就反射不到了！ 
+    /// </summary> 
+    public class Student 
+    { 
+        [DataContextAttribute("ID")] 
+        public int ID { get; set; } 
+        [DataContext("Name")] 
+        public string Name { get; set; } 
+    }
+    #endregion
+    #region 自定义特性
+    /// <summary> 
+    /// 自定义特性 
+    /// </summary> 
+    [AttributeUsage(AttributeTargets.Property)] 
+    public class DataContextAttribute : Attribute 
+    { 
+        /// <summary> 
+        /// 自定义特性 
+        /// </summary> 
+        /// <param name="fieldName">数据表字段名称</param> 
+        public DataContextAttribute(string property) { this.Property = property; } 
+        /// <summary> 
+        /// 数据表字段属性(实体属性) 
+        /// </summary> 
+        public string Property { get; set; } 
+    }
+    #endregion
+    #region 反射
+    public class Utility 
+    { 
+        /// <summary> 
+        /// 将DataRow转换成实体 
+        /// </summary> 
+        /// <param name="obj">实体</param> 
+        /// <param name="row">数据表一行数据</param> 
+        public static void ConvertToEntity(object obj, DataRow row) 
+        { 
+            ///得到obj的类型 
+            Type type = obj.GetType(); 
+            ///返回这个类型的所有公共属性 
+            PropertyInfo[] infos = type.GetProperties(); 
+            ///循环公共属性数组 
+            foreach (PropertyInfo info in infos) 
+            { 
+                ///返回自定义属性数组 
+                object[] attributes = info.GetCustomAttributes(typeof(DataContextAttribute), false); 
+                ///将自定义属性数组循环 
+                foreach (DataContextAttribute attribute in attributes) 
+                { 
+                    ///如果DataRow里也包括此列 
+                    if (row.Table.Columns.Contains(attribute.Property)) 
+                    { 
+                        ///将DataRow指定列的值赋给value 
+                        object value = row[attribute.Property]; 
+                        ///如果value为null则返回 
+                        if (value == DBNull.Value) continue; 
+                        ///将值做转换 
+                        if (info.PropertyType.Equals(typeof(string))) 
+                        { 
+                            value = row[attribute.Property].ToString(); 
+                        } 
+                        else if (info.PropertyType.Equals(typeof(int))) 
+                        { 
+                            value = Convert.ToInt32(row[attribute.Property]); 
+                        } 
+                        else if (info.PropertyType.Equals(typeof(decimal))) 
+                        { 
+                            value = Convert.ToDecimal(row[attribute.Property]); 
+                        } 
+                        else if (info.PropertyType.Equals(typeof(DateTime))) 
+                        { 
+                            value = Convert.ToDateTime(row[attribute.Property]); 
+                        } 
+                        else if (info.PropertyType.Equals(typeof(double))) 
+                        { 
+                            value = Convert.ToDouble(row[attribute.Property]); 
+                        } 
+                        else if (info.PropertyType.Equals(typeof(bool))) 
+                        { 
+                            value = Convert.ToBoolean(row[attribute.Property]); 
+                        } 
+                        ///利用反射自动将value赋值给obj的相应公共属性 
+                        info.SetValue(obj, value, null); 
+                    } 
+                } 
+            } 
+        } 
+    }
+    #endregion 
+}
+

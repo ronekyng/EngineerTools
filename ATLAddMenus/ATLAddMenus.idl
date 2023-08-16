@@ -1,0 +1,59 @@
+// ATLAddMenus.idl : ATLAddMenus 的 IDL 源
+//
+
+// 此文件将由 MIDL 工具处理以
+// 产生类型库(ATLAddMenus.tlb)和封送处理代码。
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(a817e7a2-43fa-11d0-9e44-00aa00b6770a),
+	dual,	
+	pointer_default(unique)
+]
+interface IComponentRegistrar : IDispatch
+{
+	[id(1)]	HRESULT Attach([in] BSTR bstrPath);
+	[id(2)]	HRESULT RegisterAll();
+	[id(3)]	HRESULT UnregisterAll();
+	[id(4)]	HRESULT GetComponents([out] SAFEARRAY(BSTR)* pbstrCLSIDs, [out] SAFEARRAY(BSTR)* pbstrDescriptions);
+	[id(5)]	HRESULT RegisterComponent([in] BSTR bstrCLSID);
+	[id(6)] HRESULT UnregisterComponent([in] BSTR bstrCLSID);
+};
+
+[
+	object,
+	uuid(D60A14C4-14CA-4E0C-8447-A099CA584858),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IAddMenus : IDispatch{
+};
+[
+	uuid(057974EA-8BAD-4DED-B5F4-C11527A642C6),
+	version(1.0),
+	custom(a817e7a1-43fa-11d0-9e44-00aa00b6770a,"{C51ECAC6-6B62-455C-8801-1C3F117B5FDC}")
+]
+library ATLAddMenusLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(C51ECAC6-6B62-455C-8801-1C3F117B5FDC)		
+	]
+	coclass CompReg
+	{
+		[default] interface IComponentRegistrar;
+	};
+	[
+		uuid(F92FB702-F2F1-4CC3-897D-F9C4EA4F57AA)		
+	]
+	coclass AddMenus
+	{
+		[default] interface IAddMenus;
+	};
+};
+
+import "shobjidl.idl";

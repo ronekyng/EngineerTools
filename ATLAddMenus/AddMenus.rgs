@@ -1,0 +1,16 @@
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove {F92FB702-F2F1-4CC3-897D-F9C4EA4F57AA} = s 'AddMenus Class'
+		{
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			TypeLib = s '{057974EA-8BAD-4DED-B5F4-C11527A642C6}'
+			Version = s '1.0'
+		}
+	}
+}

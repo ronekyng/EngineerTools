@@ -1,0 +1,32 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="EngineerTools.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ProjectRootFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">E:\test</Value>
+    </Setting>
+    <Setting Name="RTXFileFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\QYQ\zhangsan</Value>
+    </Setting>
+    <Setting Name="ProgramInitialed" Type="System.String" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="MdbFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">project.mdb</Value>
+    </Setting>
+    <Setting Name="DataBaseType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ACCESS</Value>
+    </Setting>
+    <Setting Name="SharePointRootFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\\sharepoint.xxx.com@SSL\DavWWWRoot\PWA</Value>
+    </Setting>
+    <Setting Name="projectConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;ConnectionString&gt;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\project.mdb&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.OleDb&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Provider=Microsoft.ACE.OLEDB.12.0;Data Source=|DataDirectory|\project.mdb</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
